@@ -15,10 +15,6 @@ public class LoadServiceTest extends ApplicationTests {
 	@Autowired
 	LoadService loadService;
 	
-//	@Value("${userFile}")
-	@Value("${policyFile}")
-	private String file;
-	
 	@Before
 	public void setUp() throws Exception {
 	}
@@ -29,7 +25,8 @@ public class LoadServiceTest extends ApplicationTests {
 
 	@Test
 	public void testInsert() {
-		loadService.insert(file);
+		loadService.insert("ca-500");
+		loadService.insert("policy");
 	}
 
 }

@@ -5,31 +5,39 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.opencsv.CSVReader;
+import com.org.bu.app.config.Config;
+import com.org.bu.app.config.ConfigService;
 import com.org.bu.app.dao.LoadDao;
 
 @Service
 public class LoadService extends BaseService {
 
+	private static final String DOT = ".";
+
 	@Autowired
 	private LoadDao loadDao;
+	
+	@Autowired
+	private ConfigService configService;
 
 	public void insert(String file) {
 
 		CSVReader reader;
 		try {
-			reader = new CSVReader(new FileReader(file));
+			Config config = configService.findById(file);
+			
+			reader = new CSVReader(new FileReader(config.getSource()));
 
 			List<String[]> items = readAll(reader);
 
 			List<List<String>> rows = transform(items);
-
-			loadDao.insert(rows, null);
+			
+			loadDao.insert(rows, config);
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
