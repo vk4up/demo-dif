@@ -8,16 +8,21 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import com.org.bu.app.ApplicationTests;
 import com.org.bu.app.domain.Policy;
 
-public class PolicyDaoTest {
+@Component
+public class PolicyDaoTest extends ApplicationTests {
 	
+	@Autowired
 	private PolicyDao policyDao;
 
 	@Before
 	public void setUp() throws Exception {
-		policyDao = new PolicyDao();
+		// policyDao = new PolicyDao();
 	}
 
 	@After
