@@ -1,16 +1,19 @@
 package com.org.bu.app.dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import com.org.bu.app.domain.User;
 
+@Component
 public class UserDao extends BaseDao {
 
 	private static final int BATCH_SIZE = 10;
@@ -18,50 +21,32 @@ public class UserDao extends BaseDao {
 
 	private Log log = LogFactory.getLog(UserDao.class);
 
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
 	public void insert(List<User> users) {
-		String url = getUrl();
-		String user = getUser();
-		String password = getPassword();
-		Connection conn = null;
-		try {
-			conn = DriverManager.getConnection(url, user, password);
-			conn.setAutoCommit(false);
 
-			int counter = 1;
-			PreparedStatement stmt = conn.prepareStatement(SQL_USERS_CA);
-			for (int index = 1; index < users.size(); index++) {
-				stmt.setString(1, users.get(index).getFirstName());
-				stmt.setString(2, users.get(index).getLastName());
-				stmt.setString(3, users.get(index).getCompanyName());
-				stmt.setString(4, users.get(index).getAddress());
-				stmt.setString(5, users.get(index).getCity());
-				stmt.setString(6, users.get(index).getProvince());
-				stmt.setString(7, users.get(index).getPostal());
-				stmt.setString(8, users.get(index).getPhone1());
-				stmt.setString(9, users.get(index).getPhone2());
-				stmt.setString(10, users.get(index).getEmail());
-				stmt.setString(11, users.get(index).getWeb());
+		jdbcTemplate.batchUpdate(SQL_USERS_CA, new BatchPreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps, int index) throws SQLException {
+				User user = users.get(index);
+				ps.setString(1, user.getFirstName());
+				ps.setString(2, user.getLastName());
+				ps.setString(3, user.getCompanyName());
+				ps.setString(4, user.getAddress());
+				ps.setString(5, user.getCity());
+				ps.setString(6, user.getProvince());
+				ps.setString(7, user.getPostal());
+				ps.setString(8, user.getPhone1());
+				ps.setString(9, user.getPhone2());
+				ps.setString(10, user.getEmail());
+				ps.setString(11, user.getWeb());
+			}
 
-				stmt.addBatch();
-				if (index % BATCH_SIZE == 0) {
-					stmt.executeBatch();
-					conn.commit();
-					log.info("Batch " + (counter++) + " executed.");
-				}
+			@Override
+			public int getBatchSize() {
+				return BATCH_SIZE;
 			}
-			stmt.executeBatch();
-			conn.commit();
-			log.info("Final Batch executed.");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
+		});
 	}
-
 }

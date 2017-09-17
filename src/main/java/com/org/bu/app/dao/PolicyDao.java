@@ -1,16 +1,19 @@
 package com.org.bu.app.dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import com.org.bu.app.domain.Policy;
 
+@Component
 public class PolicyDao extends BaseDao {
 
 	private static final int BATCH_SIZE = 10;
@@ -18,57 +21,41 @@ public class PolicyDao extends BaseDao {
 
 	private Log log = LogFactory.getLog(PolicyDao.class);
 
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
 	public void insert(List<Policy> policies) {
-		String url = getUrl();
-		String user = getUser();
-		String password = getPassword();
-		Connection conn = null;
-		try {
-			conn = DriverManager.getConnection(url, user, password);
-			conn.setAutoCommit(false);
 
-			int counter = 1;
-			PreparedStatement stmt = conn.prepareStatement(SQL_USERS_CA);
-			for (int index = 1; index < policies.size(); index++) {
-				stmt.setString(1, policies.get(index).getPolicyID());
-				stmt.setString(2, policies.get(index).getStateCode());
-				stmt.setString(3, policies.get(index).getCounty());
-				stmt.setString(4, policies.get(index).getEqSiteLimit());
-				stmt.setString(5, policies.get(index).getHuSiteLimit());
-				stmt.setString(6, policies.get(index).getFlSiteLimit());
-				stmt.setString(7, policies.get(index).getFrSiteLimit());
-				stmt.setString(8, policies.get(index).getTiv2011());
-				stmt.setString(9, policies.get(index).getTiv2012());
-				stmt.setString(10, policies.get(index).getEqSiteDeductible());
-				stmt.setString(11, policies.get(index).getHuSiteDeductible());
-				stmt.setString(12, policies.get(index).getFlSiteDeductible());
-				stmt.setString(13, policies.get(index).getFrSiteDeductible());
-				stmt.setString(14, policies.get(index).getPointLatitude());
-				stmt.setString(15, policies.get(index).getPointLongitude());
-				stmt.setString(16, policies.get(index).getLine());
-				stmt.setString(17, policies.get(index).getConstruction());
-				stmt.setString(18, policies.get(index).getPointGranularity());
+		jdbcTemplate.batchUpdate(SQL_USERS_CA, new BatchPreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps, int index) throws SQLException {
+				Policy policy = policies.get(index);
+				ps.setString(1, policy.getPolicyID());
+				ps.setString(2, policy.getStateCode());
+				ps.setString(3, policy.getCounty());
+				ps.setString(4, policy.getEqSiteLimit());
+				ps.setString(5, policy.getHuSiteLimit());
+				ps.setString(6, policy.getFlSiteLimit());
+				ps.setString(7, policy.getFrSiteLimit());
+				ps.setString(8, policy.getTiv2011());
+				ps.setString(9, policy.getTiv2012());
+				ps.setString(10, policy.getEqSiteDeductible());
+				ps.setString(11, policy.getHuSiteDeductible());
+				ps.setString(12, policy.getFlSiteDeductible());
+				ps.setString(13, policy.getFrSiteDeductible());
+				ps.setString(14, policy.getPointLatitude());
+				ps.setString(15, policy.getPointLongitude());
+				ps.setString(16, policy.getLine());
+				ps.setString(17, policy.getConstruction());
+				ps.setString(18, policy.getPointGranularity());
+			}
 
-				stmt.addBatch();
-				if (index % BATCH_SIZE == 0) {
-					stmt.executeBatch();
-					conn.commit();
-					log.info("Batch " + (counter++) + " executed.");
-				}
+			@Override
+			public int getBatchSize() {
+				return BATCH_SIZE;
 			}
-			stmt.executeBatch();
-			conn.commit();
-			log.info("Final Batch executed.");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
+		});
+
 	}
 
 }
