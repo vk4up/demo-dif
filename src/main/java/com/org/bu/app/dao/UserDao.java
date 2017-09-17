@@ -16,7 +16,6 @@ import com.org.bu.app.domain.User;
 @Component
 public class UserDao extends BaseDao {
 
-	private static final int BATCH_SIZE = 10;
 	private static final String SQL_USERS_CA = "INSERT INTO USERS_CA(first_name,last_name,company_name,address,city,province,postal,phone1,phone2,email,web) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 
 	private Log log = LogFactory.getLog(UserDao.class);
@@ -45,7 +44,7 @@ public class UserDao extends BaseDao {
 
 			@Override
 			public int getBatchSize() {
-				return BATCH_SIZE;
+				return users.size();
 			}
 		});
 	}

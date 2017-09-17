@@ -1,0 +1,37 @@
+CREATE TABLE USERS_CA  
+(   
+	first_name 		varchar2(500),
+	last_name 		varchar2(500),
+	company_name 	varchar2(500),
+	address 		varchar2(500),
+	city 			varchar2(500),
+	province 		varchar2(50),
+	postal 			varchar2(50),
+	phone1 			varchar2(50),
+	phone2 			varchar2(50),
+	email 			varchar2(500),
+	web 			varchar2(500)
+);  
+
+
+CREATE TABLE POLICY_DATA  
+(   
+	policyID varchar2(500),
+	statecode varchar2(500),
+	county varchar2(500),
+	eq_site_limit varchar2(500),
+	hu_site_limit varchar2(500),
+	fl_site_limit varchar2(500),
+	fr_site_limit varchar2(500),
+	tiv_2011 varchar2(500),
+	tiv_2012 varchar2(500),
+	eq_site_deductible varchar2(500),
+	hu_site_deductible varchar2(500),
+	fl_site_deductible varchar2(500),
+	fr_site_deductible varchar2(500),
+	point_latitude varchar2(500),
+	point_longitude varchar2(500),
+	line varchar2(500),
+	construction varchar2(500),
+	point_granularity varchar2(500)
+);
