@@ -19,4 +19,5 @@ https://hub.docker.com/_/mongo/
 docker run -d -p 27017:27017 mongo --storageEngine wiredTiger
 
 
+http://localhost:18081/dif-api/admin/health
 
