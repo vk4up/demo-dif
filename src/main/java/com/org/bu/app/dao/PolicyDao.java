@@ -16,7 +16,7 @@ import com.org.bu.app.domain.Policy;
 @Component
 public class PolicyDao extends BaseDao {
 
-	private static final String SQL_USERS_CA = "INSERT INTO POLICY_DATA(policyID,statecode,county,eq_site_limit,hu_site_limit,fl_site_limit,fr_site_limit,tiv_2011,tiv_2012,eq_site_deductible,hu_site_deductible,fl_site_deductible,fr_site_deductible,point_latitude,point_longitude,line,construction,point_granularity) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String SQL_POLICY_DATA = "INSERT INTO POLICY_DATA(policyID,statecode,county,eq_site_limit,hu_site_limit,fl_site_limit,fr_site_limit,tiv_2011,tiv_2012,eq_site_deductible,hu_site_deductible,fl_site_deductible,fr_site_deductible,point_latitude,point_longitude,line,construction,point_granularity) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private Log log = LogFactory.getLog(PolicyDao.class);
 
@@ -25,7 +25,7 @@ public class PolicyDao extends BaseDao {
 
 	public void insert(List<Policy> policies) {
 
-		jdbcTemplate.batchUpdate(SQL_USERS_CA, new BatchPreparedStatementSetter() {
+		jdbcTemplate.batchUpdate(SQL_POLICY_DATA, new BatchPreparedStatementSetter() {
 			@Override
 			public void setValues(PreparedStatement ps, int index) throws SQLException {
 				Policy policy = policies.get(index);

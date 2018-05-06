@@ -13,6 +13,21 @@ CREATE TABLE USERS_CA
 	web 			varchar2(500)
 );  
 
+CREATE TABLE USERS_US  
+(   
+	first_name 		varchar2(500),
+	last_name 		varchar2(500),
+	company_name 	varchar2(500),
+	address 		varchar2(500),
+	city 			varchar2(500),
+	province 		varchar2(50),
+	postal 			varchar2(50),
+	phone1 			varchar2(50),
+	phone2 			varchar2(50),
+	email 			varchar2(500),
+	web 			varchar2(500)
+);  
+
 
 CREATE TABLE POLICY_DATA  
 (   
